@@ -22,29 +22,33 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.launch;
+package org.spongepowered.granite.launch.console;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
+import org.apache.logging.log4j.Level;
+import org.apache.logging.log4j.Logger;
 
-import java.nio.file.Path;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 
-import javax.annotation.Nullable;
+public class LoggingOutputStream extends ByteArrayOutputStream {
 
-public final class GraniteLaunch {
+    private static final String SEPARATOR = System.getProperty("line.separator");
+    private final Logger logger;
+    private final Level level;
 
-    private GraniteLaunch() {
+    public LoggingOutputStream(Logger logger, Level level) {
+        this.logger = logger;
+        this.level = level;
     }
 
-    @Nullable private static Path gameDir;
+    @Override
+    public void flush() throws IOException {
+        String message = toString();
+        super.reset();
 
-    public static Path getGameDirectory() {
-        checkState(gameDir != null, "Granite was not initialized");
-        return gameDir;
-    }
-
-    public static void initialize(Path gameDir) {
-        GraniteLaunch.gameDir = requireNonNull(gameDir, "gameDir");
+        if (!message.isEmpty() && !message.equals(SEPARATOR)) {
+            this.logger.log(this.level, message);
+        }
     }
 
 }

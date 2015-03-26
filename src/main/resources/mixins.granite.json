@@ -2,7 +2,9 @@
     "package": "org.spongepowered.granite.mixin",
     "refmap": "mixins.granite.refmap.json",
     "server": [
+        "MixinBootstrap",
         "MixinGameProfile",
+        "server.MixinConsoleHandler",
         "server.MixinDedicatedServer",
         "server.MixinMinecraftServer",
         "server.MixinNetHandlerHandshakeTCP",

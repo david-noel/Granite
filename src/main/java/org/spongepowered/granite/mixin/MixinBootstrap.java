@@ -22,29 +22,18 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.launch;
+package org.spongepowered.granite.mixin;
 
-import static com.google.common.base.Preconditions.checkState;
-import static java.util.Objects.requireNonNull;
+import net.minecraft.init.Bootstrap;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 
-import java.nio.file.Path;
+@Mixin(Bootstrap.class)
+public class MixinBootstrap {
 
-import javax.annotation.Nullable;
-
-public final class GraniteLaunch {
-
-    private GraniteLaunch() {
-    }
-
-    @Nullable private static Path gameDir;
-
-    public static Path getGameDirectory() {
-        checkState(gameDir != null, "Granite was not initialized");
-        return gameDir;
-    }
-
-    public static void initialize(Path gameDir) {
-        GraniteLaunch.gameDir = requireNonNull(gameDir, "gameDir");
+    @Overwrite
+    private static void redirectOutputToLog() {
+        // We do that on our own
     }
 
 }

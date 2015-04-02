@@ -1,7 +1,7 @@
 /*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -37,7 +37,6 @@ import org.spongepowered.api.service.config.DefaultConfig;
 import org.spongepowered.granite.plugin.GranitePluginContainer;
 
 import java.io.File;
-import java.nio.file.Path;
 
 import javax.inject.Inject;
 
@@ -58,8 +57,7 @@ public class GranitePluginGuiceModule extends AbstractModule {
         bind(PluginContainer.class).toInstance(this.container);
         bind(Logger.class).toInstance(this.container.getLogger());
 
-        bind(Path.class).annotatedWith(privateConfigDir).toProvider(PrivateConfigDirProvider.class);
-        bind(File.class).annotatedWith(privateConfigDir).toProvider(FilePrivateConfigDirProvider.class);
+        bind(File.class).annotatedWith(privateConfigDir).toProvider(PrivateConfigDirProvider.class);
         bind(File.class).annotatedWith(sharedConfigFile).toProvider(SharedConfigFileProvider.class);
         bind(File.class).annotatedWith(privateConfigFile).toProvider(PrivateConfigFileProvider.class);
         bind(new TypeLiteral<ConfigurationLoader<CommentedConfigurationNode>>() {
@@ -70,53 +68,37 @@ public class GranitePluginGuiceModule extends AbstractModule {
                 .toProvider(PrivateHoconConfigProvider.class);
     }
 
-    private static class PrivateConfigDirProvider implements Provider<Path> {
+    private static class PrivateConfigDirProvider implements Provider<File> {
 
         private final PluginContainer container;
-        private final Path configDir;
+        private final File configDir;
 
         @Inject
-        private PrivateConfigDirProvider(PluginContainer container, @ConfigDir(sharedRoot = true) Path configDir) {
+        private PrivateConfigDirProvider(PluginContainer container, @ConfigDir(sharedRoot = true) File configDir) {
             this.container = container;
             this.configDir = configDir;
         }
 
         @Override
-        public Path get() {
-            return this.configDir.resolve(this.container.getId());
-        }
-    }
-
-    private static class FilePrivateConfigDirProvider implements Provider<File> {
-
-        private final Path configDir;
-
-        @Inject
-        private FilePrivateConfigDirProvider(PluginContainer container, @ConfigDir(sharedRoot = false) Path configDir) {
-            this.configDir = configDir;
-        }
-
-        @Override
         public File get() {
-            return this.configDir.toFile();
+            return new File(this.configDir, this.container.getId());
         }
-
     }
 
     private static class PrivateConfigFileProvider implements Provider<File> {
 
         private final PluginContainer container;
-        private final Path configDir;
+        private final File configDir;
 
         @Inject
-        private PrivateConfigFileProvider(PluginContainer container, @ConfigDir(sharedRoot = false) Path configDir) {
+        private PrivateConfigFileProvider(PluginContainer container, @ConfigDir(sharedRoot = false) File configDir) {
             this.container = container;
             this.configDir = configDir;
         }
 
         @Override
         public File get() {
-            return this.configDir.resolve(this.container.getId() + ".conf").toFile();
+            return new File(this.configDir, this.container.getId() + ".conf");
         }
 
     }
@@ -124,17 +106,17 @@ public class GranitePluginGuiceModule extends AbstractModule {
     private static class SharedConfigFileProvider implements Provider<File> {
 
         private final PluginContainer container;
-        private final Path configDir;
+        private final File configDir;
 
         @Inject
-        private SharedConfigFileProvider(PluginContainer container, @ConfigDir(sharedRoot = true) Path configDir) {
+        private SharedConfigFileProvider(PluginContainer container, @ConfigDir(sharedRoot = true) File configDir) {
             this.container = container;
             this.configDir = configDir;
         }
 
         @Override
         public File get() {
-            return this.configDir.resolve(this.container.getId() + ".conf").toFile();
+            return new File(this.configDir, this.container.getId() + ".conf");
         }
 
     }

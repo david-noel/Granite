@@ -1,7 +1,7 @@
 /*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -25,7 +25,6 @@
 package org.spongepowered.granite;
 
 import com.google.common.base.Objects;
-import com.google.common.base.Optional;
 import net.minecraft.server.MinecraftServer;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.Game;
@@ -72,8 +71,8 @@ public class GraniteGame implements Game {
     }
 
     @Override
-    public Optional<Server> getServer() {
-        return Optional.fromNullable((Server) MinecraftServer.getServer());
+    public Server getServer() {
+        return (Server) MinecraftServer.getServer();
     }
 
     @Override

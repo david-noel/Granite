@@ -1,7 +1,7 @@
 /*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -22,31 +22,22 @@
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
  * THE SOFTWARE.
  */
-package org.spongepowered.granite.text.action;
+package org.spongepowered.granite.util;
 
-import net.minecraft.event.ClickEvent;
-import org.spongepowered.api.text.action.ClickAction;
+import java.io.File;
+import java.io.FilenameFilter;
 
-public final class GraniteClickAction {
+public class FileExtensionFilter implements FilenameFilter {
 
-    private GraniteClickAction() {}
+    private final String extension;
 
-    private static ClickEvent.Action getType(ClickAction<?> action) {
-        if (action instanceof ClickAction.OpenUrl) {
-            return ClickEvent.Action.OPEN_URL;
-        } else if (action instanceof ClickAction.RunCommand) {
-            return ClickEvent.Action.RUN_COMMAND;
-        } else if (action instanceof ClickAction.SuggestCommand) {
-            return ClickEvent.Action.SUGGEST_COMMAND;
-        } else if (action instanceof ClickAction.ChangePage) {
-            return ClickEvent.Action.CHANGE_PAGE;
-        }
-
-        throw new UnsupportedOperationException(action.getClass().toString());
+    public FileExtensionFilter(String extension) {
+        this.extension = '.' + extension;
     }
 
-    public static ClickEvent getHandle(ClickAction<?> action) {
-        return new ClickEvent(getType(action), action.getResult().toString());
+    @Override
+    public boolean accept(File dir, String name) {
+        return name.endsWith(this.extension);
     }
 
 }

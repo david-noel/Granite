@@ -1,7 +1,7 @@
 /*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,6 +34,7 @@ import org.spongepowered.api.event.state.ServerStoppingEvent;
 import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Overwrite;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -61,6 +62,11 @@ public abstract class MixinMinecraftServer implements Server, CommandSource {
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void onServerStopped(CallbackInfo ci) {
         Granite.instance.postState(ServerStoppedEvent.class);
+    }
+
+    @Overwrite
+    public String getServerModName() {
+        return Granite.instance.getName();
     }
 
     @Override

@@ -1,7 +1,7 @@
 /*
  * This file is part of Granite, licensed under the MIT License (MIT).
  *
- * Copyright (c) SpongePowered <http://github.com/SpongePowered>
+ * Copyright (c) SpongePowered <https://www.spongepowered.org>
  * Copyright (c) contributors
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -34,12 +34,11 @@ import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.granite.Granite;
 import org.spongepowered.granite.GraniteGame;
-import org.spongepowered.granite.GraniteGameRegistry;
 import org.spongepowered.granite.event.GraniteEventManager;
 import org.spongepowered.granite.plugin.GranitePluginManager;
+import org.spongepowered.granite.registry.GraniteGameRegistry;
 
 import java.io.File;
-import java.nio.file.Path;
 
 public class GraniteGuiceModule extends AbstractModule {
 
@@ -53,10 +52,7 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        Path configDir = Granite.instance.getConfigDirectory();
-
-        bind(Path.class).annotatedWith(sharedRoot).toInstance(configDir);
-        bind(File.class).annotatedWith(sharedRoot).toInstance(configDir.toFile());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(Granite.instance.getConfigDirectory());
     }
 
 }

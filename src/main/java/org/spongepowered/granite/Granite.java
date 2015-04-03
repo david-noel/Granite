@@ -69,7 +69,7 @@ public final class Granite {
         this.configDir = new File(this.gameDir, "config");
 
         this.plugin = new Plugin();
-        this.sponge = Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger())).getInstance(Sponge.class);
+        this.sponge = Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger(), new GraniteImpl())).getInstance(Sponge.class);
         this.game = Sponge.getInjector().getInstance(Game.class);
     }
 

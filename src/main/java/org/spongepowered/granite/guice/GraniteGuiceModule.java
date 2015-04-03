@@ -33,9 +33,11 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.granite.Granite;
 import org.spongepowered.granite.GraniteGame;
+import org.spongepowered.granite.GraniteImpl;
 import org.spongepowered.granite.event.GraniteEventManager;
 import org.spongepowered.granite.plugin.GranitePluginManager;
 import org.spongepowered.granite.registry.GraniteGameRegistry;
@@ -46,16 +48,19 @@ public class GraniteGuiceModule extends AbstractModule {
 
     private final Granite granite;
     private final Logger logger;
+    private final GraniteImpl impl;
 
-    public GraniteGuiceModule(Granite granite, Logger logger) {
+    public GraniteGuiceModule(Granite granite, Logger logger, GraniteImpl impl) {
         this.granite = granite;
         this.logger = logger;
+        this.impl = impl;
     }
 
     @Override
     protected void configure() {
         bind(Granite.class).toInstance(this.granite);
         bind(Logger.class).toInstance(this.logger);
+        bind(SpongeImpl.class).toInstance(this.impl);
 
         bind(Game.class).to(GraniteGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);

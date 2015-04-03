@@ -28,6 +28,7 @@ import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import org.apache.logging.log4j.LogManager;
 import org.spongepowered.api.Game;
+import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
@@ -39,7 +40,6 @@ import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.common.Sponge;
-import org.spongepowered.granite.event.GraniteEventFactory;
 import org.spongepowered.granite.guice.GraniteGuiceModule;
 import org.spongepowered.granite.launch.GraniteLaunch;
 import org.spongepowered.granite.plugin.GranitePluginManager;
@@ -130,7 +130,7 @@ public final class Granite {
     }
 
     public void postState(Class<? extends StateEvent> type) {
-        this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
+        this.game.getEventManager().post(SpongeEventFactory.createState(type, this.game));
     }
 
     private class Plugin implements PluginContainer {

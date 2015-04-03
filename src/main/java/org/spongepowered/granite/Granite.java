@@ -27,6 +27,7 @@ package org.spongepowered.granite;
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
 import org.apache.logging.log4j.LogManager;
+import org.spongepowered.api.Game;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
@@ -41,6 +42,7 @@ import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.event.GraniteEventFactory;
 import org.spongepowered.granite.guice.GraniteGuiceModule;
 import org.spongepowered.granite.launch.GraniteLaunch;
+import org.spongepowered.granite.plugin.GranitePluginManager;
 
 import java.io.File;
 import java.io.IOException;
@@ -55,7 +57,7 @@ public final class Granite {
 
     private final Sponge sponge;
     private final Plugin plugin;
-    private final GraniteGame game;
+    private final Game game;
 
     private final File gameDir;
     private final File pluginsDir;
@@ -68,7 +70,7 @@ public final class Granite {
 
         this.plugin = new Plugin();
         this.sponge = Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger())).getInstance(Sponge.class);
-        this.game = Sponge.getInjector().getInstance(GraniteGame.class);
+        this.game = Sponge.getInjector().getInstance(Game.class);
     }
 
     public Sponge getSponge() {
@@ -110,7 +112,7 @@ public final class Granite {
             }
 
             Sponge.getLogger().info("Loading plugins...");
-            this.game.getPluginManager().loadPlugins();
+            ((GranitePluginManager) this.game.getPluginManager()).loadPlugins();
             postState(ConstructionEvent.class);
             Sponge.getLogger().info("Initializing plugins...");
             postState(PreInitializationEvent.class);

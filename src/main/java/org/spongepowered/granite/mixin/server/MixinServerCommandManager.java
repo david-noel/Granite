@@ -31,7 +31,7 @@ import org.spongepowered.api.Game;
 import org.spongepowered.api.event.SpongeEventFactory;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.granite.Granite;
+import org.spongepowered.common.Sponge;
 
 @Mixin(ServerCommandManager.class)
 public abstract class MixinServerCommandManager extends CommandHandler {
@@ -51,7 +51,7 @@ public abstract class MixinServerCommandManager extends CommandHandler {
             args = command.substring(pos + 1);
         }
 
-        Game game = Granite.instance.getGame();
+        Game game = Sponge.getInstance().getGame();
         if (game.getEventManager().post(SpongeEventFactory.createCommand(game, args, (CommandSource) sender, name))) {
             return 1;
         }

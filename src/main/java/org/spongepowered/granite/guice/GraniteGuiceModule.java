@@ -26,12 +26,15 @@ package org.spongepowered.granite.guice;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
+import org.apache.logging.log4j.Logger;
 import org.spongepowered.api.Game;
 import org.spongepowered.api.GameRegistry;
+import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.granite.Granite;
 import org.spongepowered.granite.GraniteGame;
 import org.spongepowered.granite.event.GraniteEventManager;
@@ -42,9 +45,19 @@ import java.io.File;
 
 public class GraniteGuiceModule extends AbstractModule {
 
+    private final Granite granite;
+    private final Logger logger;
+
+    public GraniteGuiceModule(Granite granite, Logger logger) {
+        this.granite = granite;
+        this.logger = logger;
+    }
+
     @Override
     protected void configure() {
-        bind(Granite.class).toInstance(Granite.instance);
+        bind(Granite.class).toInstance(this.granite);
+        bind(Logger.class).toInstance(this.logger);
+
         bind(Game.class).to(GraniteGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);
         bind(EventManager.class).to(GraniteEventManager.class).in(Scopes.SINGLETON);
@@ -52,7 +65,7 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        bind(File.class).annotatedWith(sharedRoot).toInstance(Granite.instance.getConfigDirectory());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(this.granite.getConfigDirectory());
     }
 
 }

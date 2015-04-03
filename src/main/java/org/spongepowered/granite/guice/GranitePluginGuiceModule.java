@@ -34,6 +34,8 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.config.ConfigDir;
 import org.spongepowered.api.service.config.DefaultConfig;
+import org.spongepowered.common.guice.ConfigDirAnnotation;
+import org.spongepowered.common.guice.ConfigFileAnnotation;
 import org.spongepowered.granite.plugin.GranitePluginContainer;
 
 import java.io.File;

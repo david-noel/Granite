@@ -26,10 +26,7 @@ package org.spongepowered.granite;
 
 import com.google.common.base.Throwables;
 import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
-import org.spongepowered.api.Game;
 import org.spongepowered.api.event.state.ConstructionEvent;
 import org.spongepowered.api.event.state.InitializationEvent;
 import org.spongepowered.api.event.state.LoadCompleteEvent;
@@ -40,6 +37,7 @@ import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.service.ProviderExistsException;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.event.GraniteEventFactory;
 import org.spongepowered.granite.guice.GraniteGuiceModule;
 import org.spongepowered.granite.launch.GraniteLaunch;
@@ -47,36 +45,38 @@ import org.spongepowered.granite.launch.GraniteLaunch;
 import java.io.File;
 import java.io.IOException;
 
-public final class Granite implements PluginContainer {
+public final class Granite {
 
-    public static final Granite instance = new Granite();
+    private static final Granite instance = new Granite();
 
-    private static final Injector injector = Guice.createInjector(new GraniteGuiceModule());
-
-    public static Injector getInjector() {
-        return injector;
+    public static Granite getInstance() {
+        return instance;
     }
 
-    private final Logger logger = LogManager.getLogger();
+    private final Sponge sponge;
+    private final Plugin plugin;
+    private final GraniteGame game;
 
     private final File gameDir;
     private final File pluginsDir;
     private final File configDir;
 
-    private GraniteGame game;
-
     private Granite() {
         this.gameDir = GraniteLaunch.getGameDirectory();
         this.pluginsDir = new File(this.gameDir, "plugins");
         this.configDir = new File(this.gameDir, "config");
+
+        this.plugin = new Plugin();
+        this.sponge = Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger())).getInstance(Sponge.class);
+        this.game = Sponge.getInjector().getInstance(GraniteGame.class);
     }
 
-    public Game getGame() {
-        return this.game;
+    public Sponge getSponge() {
+        return this.sponge;
     }
 
-    public Logger getLogger() {
-        return this.logger;
+    public PluginContainer getPlugin() {
+        return this.plugin;
     }
 
     public File getGameDirectory() {
@@ -93,16 +93,14 @@ public final class Granite implements PluginContainer {
 
     public void load() {
         try {
-            this.logger.info("Loading Granite...");
-
-            this.game = injector.getInstance(GraniteGame.class);
+            Sponge.getLogger().info("Loading Granite...");
 
             try {
                 SimpleCommandService commandService = new SimpleCommandService(this.game.getPluginManager());
                 this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
                 this.game.getEventManager().register(this, commandService);
             } catch (ProviderExistsException e) {
-                this.logger.warn("An unknown CommandService was already registered", e);
+                Sponge.getLogger().warn("An unknown CommandService was already registered", e);
             }
 
             if (!this.gameDir.isDirectory() || !this.pluginsDir.isDirectory()) {
@@ -111,10 +109,10 @@ public final class Granite implements PluginContainer {
                 }
             }
 
-            getLogger().info("Loading plugins...");
+            Sponge.getLogger().info("Loading plugins...");
             this.game.getPluginManager().loadPlugins();
             postState(ConstructionEvent.class);
-            getLogger().info("Initializing plugins...");
+            Sponge.getLogger().info("Initializing plugins...");
             postState(PreInitializationEvent.class);
         } catch (IOException e) {
             throw Throwables.propagate(e);
@@ -124,7 +122,7 @@ public final class Granite implements PluginContainer {
     public void initialize() {
         postState(InitializationEvent.class);
         postState(PostInitializationEvent.class);
-        getLogger().info("Successfully loaded and initialized plugins.");
+        Sponge.getLogger().info("Successfully loaded and initialized plugins.");
 
         postState(LoadCompleteEvent.class);
     }
@@ -133,24 +131,28 @@ public final class Granite implements PluginContainer {
         this.game.getEventManager().post(GraniteEventFactory.createStateEvent(type, this.game));
     }
 
-    @Override
-    public String getId() {
-        return "granite";
-    }
+    private class Plugin implements PluginContainer {
 
-    @Override
-    public String getName() {
-        return "Granite";
-    }
+        @Override
+        public String getId() {
+            return "granite";
+        }
 
-    @Override
-    public String getVersion() {
-        return this.game.getImplementationVersion();
-    }
+        @Override
+        public String getName() {
+            return "Granite";
+        }
 
-    @Override
-    public Object getInstance() {
-        return this;
+        @Override
+        public String getVersion() {
+            return Granite.this.game.getImplementationVersion();
+        }
+
+        @Override
+        public Object getInstance() {
+            return Granite.this;
+        }
+
     }
 
 }

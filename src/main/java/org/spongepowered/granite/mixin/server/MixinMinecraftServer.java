@@ -24,9 +24,8 @@
  */
 package org.spongepowered.granite.mixin.server;
 
+import net.minecraft.command.ICommandSender;
 import net.minecraft.server.MinecraftServer;
-import net.minecraft.util.ChatComponentText;
-import net.minecraft.util.IChatComponent;
 import org.spongepowered.api.Server;
 import org.spongepowered.api.event.state.ServerStartedEvent;
 import org.spongepowered.api.event.state.ServerStoppedEvent;
@@ -35,45 +34,46 @@ import org.spongepowered.api.text.Text;
 import org.spongepowered.api.util.command.CommandSource;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.common.text.SpongeText;
 import org.spongepowered.granite.Granite;
 
 @Mixin(MinecraftServer.class)
-public abstract class MixinMinecraftServer implements Server, CommandSource {
-
-    @Shadow
-    public abstract void addChatMessage(IChatComponent message);
+public abstract class MixinMinecraftServer implements Server, CommandSource, ICommandSender {
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;addFaviconToStatusResponse"
             + "(Lnet/minecraft/network/ServerStatusResponse;)V", shift = At.Shift.AFTER))
     public void onServerStarted(CallbackInfo ci) {
-        Granite.instance.postState(ServerStartedEvent.class);
+        Granite.getInstance().postState(ServerStartedEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;finalTick(Lnet/minecraft/crash/CrashReport;)V",
             ordinal = 0, shift = At.Shift.BY, by = -9))
     public void onServerStopping(CallbackInfo ci) {
-        Granite.instance.postState(ServerStoppingEvent.class);
+        Granite.getInstance().postState(ServerStoppingEvent.class);
     }
 
     @Inject(method = "run", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/MinecraftServer;systemExitNow()V"))
     public void onServerStopped(CallbackInfo ci) {
-        Granite.instance.postState(ServerStoppedEvent.class);
+        Granite.getInstance().postState(ServerStoppedEvent.class);
     }
 
     @Overwrite
     public String getServerModName() {
-        return Granite.instance.getName();
+        return Granite.getInstance().getPlugin().getName();
+    }
+
+    @Override
+    public String getName() {
+        return getCommandSenderName();
     }
 
     @Override
     public void sendMessage(Text... messages) {
         for (Text message : messages) {
-            //TODO Incorrect, needs to be fixed for Text API 2
-            addChatMessage(new ChatComponentText(message.toString()));
+            addChatMessage(((SpongeText) message).toComponent());
         }
     }
 

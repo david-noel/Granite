@@ -27,8 +27,6 @@ package org.spongepowered.granite.registry;
 import com.google.common.base.Optional;
 import org.apache.commons.lang3.NotImplementedException;
 import org.spongepowered.api.GameDictionary;
-import org.spongepowered.api.GameProfile;
-import org.spongepowered.api.GameRegistry;
 import org.spongepowered.api.attribute.Attribute;
 import org.spongepowered.api.attribute.AttributeBuilder;
 import org.spongepowered.api.attribute.AttributeCalculator;
@@ -86,13 +84,9 @@ import org.spongepowered.api.stats.StatisticGroup;
 import org.spongepowered.api.stats.TeamStatistic;
 import org.spongepowered.api.stats.achievement.Achievement;
 import org.spongepowered.api.stats.achievement.AchievementBuilder;
-import org.spongepowered.api.status.Favicon;
-import org.spongepowered.api.text.chat.ChatType;
 import org.spongepowered.api.text.format.TextColor;
-import org.spongepowered.api.text.format.TextStyle;
 import org.spongepowered.api.text.selector.ArgumentType;
 import org.spongepowered.api.text.selector.SelectorType;
-import org.spongepowered.api.text.translation.Translation;
 import org.spongepowered.api.util.rotation.Rotation;
 import org.spongepowered.api.world.DimensionType;
 import org.spongepowered.api.world.GeneratorType;
@@ -102,21 +96,21 @@ import org.spongepowered.api.world.biome.BiomeType;
 import org.spongepowered.api.world.difficulty.Difficulty;
 import org.spongepowered.api.world.gen.WorldGenerator;
 import org.spongepowered.api.world.storage.WorldProperties;
+import org.spongepowered.common.registry.SpongeGameRegistry;
 
-import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.util.Collection;
-import java.util.Locale;
-import java.util.UUID;
 import java.util.concurrent.Callable;
 
 import javax.inject.Singleton;
 
 @Singleton
-public class GraniteGameRegistry implements GameRegistry {
+public class GraniteGameRegistry extends SpongeGameRegistry {
+
+    public GraniteGameRegistry() {
+        this.setTextFactory();
+        this.setTextColors();
+        this.setLocales();
+    }
 
     @Override
     public Optional<BlockType> getBlock(String id) {
@@ -464,36 +458,6 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public GameProfile createGameProfile(UUID uuid, String name) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Favicon loadFavicon(String raw) throws IOException {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Favicon loadFavicon(File file) throws IOException {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Favicon loadFavicon(URL url) throws IOException {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Favicon loadFavicon(InputStream in) throws IOException {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Favicon loadFavicon(BufferedImage image) throws IOException {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
     public Optional<NotePitch> getNotePitch(String name) {
         throw new NotImplementedException("TODO");
     }
@@ -639,36 +603,6 @@ public class GraniteGameRegistry implements GameRegistry {
     }
 
     @Override
-    public Optional<TextColor> getTextColor(String name) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Collection<TextColor> getTextColors() {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Optional<TextStyle> getTextStyle(String name) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Collection<TextStyle> getTextStyles() {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Optional<ChatType> getChatType(String name) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Collection<ChatType> getChatTypes() {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
     public Optional<SelectorType> getSelectorType(String name) {
         throw new NotImplementedException("TODO");
     }
@@ -685,26 +619,6 @@ public class GraniteGameRegistry implements GameRegistry {
 
     @Override
     public Collection<ArgumentType<?>> getArgumentTypes() {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Optional<Locale> getLocale(String name) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Optional<Locale> getLocaleById(String id) {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Collection<Locale> getLocales() {
-        throw new NotImplementedException("TODO");
-    }
-
-    @Override
-    public Optional<Translation> getTranslationById(String id) {
         throw new NotImplementedException("TODO");
     }
 
@@ -792,5 +706,4 @@ public class GraniteGameRegistry implements GameRegistry {
     public GeneratorType registerGeneratorType(String name, Callable<WorldGenerator> generator, DataContainer settings) {
         throw new NotImplementedException("TODO");
     }
-
 }

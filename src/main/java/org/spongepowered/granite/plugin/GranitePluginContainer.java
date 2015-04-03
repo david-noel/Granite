@@ -28,7 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
-import org.spongepowered.granite.Granite;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.guice.GranitePluginGuiceModule;
 
 public class GranitePluginContainer implements PluginContainer {
@@ -46,7 +46,7 @@ public class GranitePluginContainer implements PluginContainer {
         this.version = info.version();
         this.logger = LoggerFactory.getLogger(this.id);
 
-        this.instance = Granite.getInjector().createChildInjector(new GranitePluginGuiceModule(this)).getInstance(pluginClass);
+        this.instance = Sponge.getInjector().createChildInjector(new GranitePluginGuiceModule(this)).getInstance(pluginClass);
     }
 
     @Override

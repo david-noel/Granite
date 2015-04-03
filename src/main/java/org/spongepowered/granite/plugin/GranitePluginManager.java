@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.spongepowered.api.plugin.Plugin;
 import org.spongepowered.api.plugin.PluginContainer;
 import org.spongepowered.api.plugin.PluginManager;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.Granite;
 import org.spongepowered.granite.util.FileExtensionFilter;
 
@@ -69,8 +70,9 @@ public class GranitePluginManager implements PluginManager {
     @Inject
     public GranitePluginManager(Granite granite) {
         this.granite = checkNotNull(granite, "granite");
-        this.plugins.put(granite.getId(), granite);
-        this.pluginInstances.put(granite, granite);
+        PluginContainer plugin = granite.getPlugin();
+        this.plugins.put(plugin.getId(), plugin);
+        this.pluginInstances.put(granite, plugin);
     }
 
     public void loadPlugins() throws IOException {
@@ -103,7 +105,7 @@ public class GranitePluginManager implements PluginManager {
                     zip.close();
                 }
             } catch (IOException e) {
-                this.granite.getLogger().error("Failed to load plugin JAR: " + jar, e);
+                Sponge.getLogger().error("Failed to load plugin JAR: " + jar, e);
                 continue;
             }
 
@@ -115,11 +117,11 @@ public class GranitePluginManager implements PluginManager {
                     GranitePluginContainer container = new GranitePluginContainer(pluginClass);
                     this.plugins.put(container.getId(), container);
                     this.pluginInstances.put(container.getInstance(), container);
-                    this.granite.getGame().getEventManager().register(container, container.getInstance());
+                    Sponge.getGame().getEventManager().register(container, container.getInstance());
 
-                    this.granite.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
+                    Sponge.getLogger().info("Loaded plugin: {} (from {})", container.getName(), jar);
                 } catch (Throwable e) {
-                    this.granite.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
+                    Sponge.getLogger().error("Failed to load plugin: " + pluginClassName + " (from " + jar + ')', e);
                 }
             }
         }

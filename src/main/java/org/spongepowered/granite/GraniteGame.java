@@ -36,6 +36,7 @@ import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.scheduler.AsynchronousScheduler;
 import org.spongepowered.api.service.scheduler.SynchronousScheduler;
+import org.spongepowered.common.SpongeMinecraftVersion;
 import org.spongepowered.granite.event.GraniteEventManager;
 import org.spongepowered.granite.plugin.GranitePluginManager;
 
@@ -49,7 +50,7 @@ public class GraniteGame implements Game {
     private static final String IMPLEMENTATION_VERSION =
             Objects.firstNonNull(GraniteGame.class.getPackage().getImplementationVersion(), "UNKNOWN");
 
-    private static final MinecraftVersion MINECRAFT_VERSION = new GraniteMinecraftVersion("1.8", 47);
+    private static final MinecraftVersion MINECRAFT_VERSION = new SpongeMinecraftVersion("1.8", 47);
 
     private final GranitePluginManager pluginManager;
     private final GraniteEventManager eventManager;

@@ -112,6 +112,8 @@ public final class VanillaServerTweaker implements ITweaker {
         MixinBootstrap.init();
         MixinEnvironment env = MixinEnvironment.getCurrentEnvironment();
         env.addConfiguration("mixins.granite.json");
+        env.addConfiguration("mixins.sponge.api.json");
+        env.addConfiguration("mixins.sponge.core.json");
         env.setSide(MixinEnvironment.Side.SERVER);
         loader.registerTransformer(MixinBootstrap.TRANSFORMER_CLASS);
 

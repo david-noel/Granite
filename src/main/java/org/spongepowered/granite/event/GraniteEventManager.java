@@ -41,6 +41,7 @@ import org.spongepowered.api.service.event.EventManager;
 import org.spongepowered.api.util.event.Cancellable;
 import org.spongepowered.api.util.event.Event;
 import org.spongepowered.api.util.event.Subscribe;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.Granite;
 
 import java.lang.reflect.Method;
@@ -124,11 +125,11 @@ public class GraniteEventManager implements EventManager {
                         EventHandler handler = this.handlerFactory.get(listener, method);
                         handlers.add(new RegisteredHandler(container, eventClass, subscribe.order(), handler, method, subscribe.ignoreCancelled()));
                     } catch (Exception e) {
-                        this.granite.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
+                        Sponge.getLogger().error("Failed to create handler for " + method + " on " + method.getDeclaringClass().getName(), e);
                     }
 
                 } else {
-                    this.granite.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method,
+                    Sponge.getLogger().warn("The method {} on {} has @{} but has the wrong signature", method,
                             method.getDeclaringClass().getName(), Subscribe.class.getName());
                 }
             }
@@ -184,7 +185,7 @@ public class GraniteEventManager implements EventManager {
             try {
                 handler.handle(event);
             } catch (Throwable e) {
-                this.granite.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
+                Sponge.getLogger().error("Could not pass " + event.getClass().getSimpleName() + " to " + handler.getPlugin(), e);
             }
         }
 

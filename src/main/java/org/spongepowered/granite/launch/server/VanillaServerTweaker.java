@@ -33,7 +33,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.spongepowered.asm.launch.MixinBootstrap;
 import org.spongepowered.asm.mixin.MixinEnvironment;
-import org.spongepowered.granite.launch.GraniteLaunch;
+import org.spongepowered.common.launch.SpongeLaunch;
 
 import java.io.File;
 import java.io.IOException;
@@ -48,7 +48,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
     @Override
     public void acceptOptions(List<String> args, File gameDir, File assetsDir, String profile) {
-        GraniteLaunch.initialize(gameDir != null ? gameDir : new File("."));
+        SpongeLaunch.initialize(gameDir, null, null);
 
         if (args != null && !args.isEmpty()) {
             this.args = args.toArray(new String[args.size()]);
@@ -87,6 +87,7 @@ public final class VanillaServerTweaker implements ITweaker {
 
         // Granite Launch
         loader.addClassLoaderExclusion("org.spongepowered.tools.");
+        loader.addClassLoaderExclusion("org.spongepowered.common.launch.");
         loader.addClassLoaderExclusion("org.spongepowered.granite.launch.");
         loader.addTransformerExclusion("org.spongepowered.granite.mixin.");
 

@@ -33,6 +33,7 @@ import org.spongepowered.api.plugin.PluginManager;
 import org.spongepowered.api.service.ServiceManager;
 import org.spongepowered.api.service.SimpleServiceManager;
 import org.spongepowered.api.service.event.EventManager;
+import org.spongepowered.common.Sponge;
 import org.spongepowered.common.SpongeImpl;
 import org.spongepowered.common.guice.ConfigDirAnnotation;
 import org.spongepowered.granite.Granite;
@@ -69,7 +70,7 @@ public class GraniteGuiceModule extends AbstractModule {
         bind(ServiceManager.class).to(SimpleServiceManager.class).in(Scopes.SINGLETON);
 
         ConfigDirAnnotation sharedRoot = new ConfigDirAnnotation(true);
-        bind(File.class).annotatedWith(sharedRoot).toInstance(this.granite.getConfigDirectory());
+        bind(File.class).annotatedWith(sharedRoot).toInstance(Sponge.getConfigDirectory());
     }
 
 }

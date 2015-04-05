@@ -41,7 +41,6 @@ import org.spongepowered.api.service.command.CommandService;
 import org.spongepowered.api.service.command.SimpleCommandService;
 import org.spongepowered.common.Sponge;
 import org.spongepowered.granite.guice.GraniteGuiceModule;
-import org.spongepowered.granite.launch.GraniteLaunch;
 import org.spongepowered.granite.plugin.GranitePluginManager;
 
 import java.io.File;
@@ -55,42 +54,20 @@ public final class Granite {
         return instance;
     }
 
-    private final Sponge sponge;
     private final Plugin plugin;
     private final Game game;
 
-    private final File gameDir;
-    private final File pluginsDir;
-    private final File configDir;
-
     private Granite() {
-        this.gameDir = GraniteLaunch.getGameDirectory();
-        this.pluginsDir = new File(this.gameDir, "plugins");
-        this.configDir = new File(this.gameDir, "config");
-
         this.plugin = new Plugin();
-        this.sponge = Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger(), new GraniteImpl())).getInstance(Sponge.class);
-        this.game = Sponge.getInjector().getInstance(Game.class);
-    }
 
-    public Sponge getSponge() {
-        return this.sponge;
+        // Initialize Sponge
+        Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger(), new GraniteImpl())).getInstance(Sponge.class);
+
+        this.game = Sponge.getGame();
     }
 
     public PluginContainer getPlugin() {
         return this.plugin;
-    }
-
-    public File getGameDirectory() {
-        return this.gameDir;
-    }
-
-    public File getPluginsDirectory() {
-        return this.pluginsDir;
-    }
-
-    public File getConfigDirectory() {
-        return this.configDir;
     }
 
     public void load() {
@@ -105,8 +82,11 @@ public final class Granite {
                 Sponge.getLogger().warn("An unknown CommandService was already registered", e);
             }
 
-            if (!this.gameDir.isDirectory() || !this.pluginsDir.isDirectory()) {
-                if (!this.pluginsDir.mkdirs()) {
+            File gameDir = Sponge.getGameDirectory();
+            File pluginsDir = Sponge.getPluginsDirectory();
+
+            if (!gameDir.isDirectory() || !pluginsDir.isDirectory()) {
+                if (!pluginsDir.mkdirs()) {
                     throw new IOException("Failed to create plugins folder");
                 }
             }

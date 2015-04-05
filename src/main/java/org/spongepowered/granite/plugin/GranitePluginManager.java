@@ -76,7 +76,7 @@ public class GranitePluginManager implements PluginManager {
     }
 
     public void loadPlugins() throws IOException {
-        for (File jar : this.granite.getPluginsDirectory().listFiles(JAR_FILES)) {
+        for (File jar : Sponge.getPluginsDirectory().listFiles(JAR_FILES)) {
             String pluginClassName = null;
 
             try {

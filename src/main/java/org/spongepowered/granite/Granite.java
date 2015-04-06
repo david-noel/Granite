@@ -61,7 +61,7 @@ public final class Granite {
         this.plugin = new Plugin();
 
         // Initialize Sponge
-        Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger(), new GraniteImpl())).getInstance(Sponge.class);
+        Guice.createInjector(new GraniteGuiceModule(this, LogManager.getLogger())).getInstance(Sponge.class);
 
         this.game = Sponge.getGame();
     }

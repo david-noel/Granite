@@ -49,19 +49,17 @@ public class GraniteGuiceModule extends AbstractModule {
 
     private final Granite granite;
     private final Logger logger;
-    private final GraniteImpl impl;
 
-    public GraniteGuiceModule(Granite granite, Logger logger, GraniteImpl impl) {
+    public GraniteGuiceModule(Granite granite, Logger logger) {
         this.granite = granite;
         this.logger = logger;
-        this.impl = impl;
     }
 
     @Override
     protected void configure() {
         bind(Granite.class).toInstance(this.granite);
         bind(Logger.class).toInstance(this.logger);
-        bind(SpongeImpl.class).toInstance(this.impl);
+        bind(SpongeImpl.class).to(GraniteImpl.class).in(Scopes.SINGLETON);
 
         bind(Game.class).to(GraniteGame.class).in(Scopes.SINGLETON);
         bind(PluginManager.class).to(GranitePluginManager.class).in(Scopes.SINGLETON);

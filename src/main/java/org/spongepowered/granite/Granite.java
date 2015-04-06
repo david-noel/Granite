@@ -74,14 +74,6 @@ public final class Granite {
         try {
             Sponge.getLogger().info("Loading Granite...");
 
-            try {
-                SimpleCommandService commandService = new SimpleCommandService(this.game.getPluginManager());
-                this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
-                this.game.getEventManager().register(this, commandService);
-            } catch (ProviderExistsException e) {
-                Sponge.getLogger().warn("An unknown CommandService was already registered", e);
-            }
-
             File gameDir = Sponge.getGameDirectory();
             File pluginsDir = Sponge.getPluginsDirectory();
 
@@ -90,6 +82,16 @@ public final class Granite {
                     throw new IOException("Failed to create plugins folder");
                 }
             }
+
+            try {
+                SimpleCommandService commandService = new SimpleCommandService(this.game.getPluginManager());
+                this.game.getServiceManager().setProvider(this, CommandService.class, commandService);
+                this.game.getEventManager().register(this, commandService);
+            } catch (ProviderExistsException e) {
+                Sponge.getLogger().warn("An unknown CommandService was already registered", e);
+            }
+
+            this.game.getEventManager().register(this, this.game.getRegistry());
 
             Sponge.getLogger().info("Loading plugins...");
             ((GranitePluginManager) this.game.getPluginManager()).loadPlugins();
